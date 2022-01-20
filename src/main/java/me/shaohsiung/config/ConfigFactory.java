@@ -16,7 +16,7 @@ public class ConfigFactory {
             config = mapper.readValue(new File("src/main/resources/bot.yml"), WordBotConfig.class);
         } 
         catch (IOException e) {
-            throw new RuntimeException("yaml config parse failed");
+            throw new RuntimeException("yaml config parse failed", e);
         }
         return config;
     }

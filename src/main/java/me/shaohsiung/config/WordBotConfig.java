@@ -8,6 +8,7 @@ public class WordBotConfig {
     private ProxyConfig proxy;
     private TelegramConfig telegram;
     private DingdingConfig dingding;
+    private EudbConfig eudb;
     
     public String getBotToken() {
         TelegramConfig.BotConfig bot = telegram.getBot();
@@ -44,6 +45,10 @@ public class WordBotConfig {
         return bot.getCreatorId();
     }
 
+    public String getEudbAccessToken() {
+        return eudb.getAccessToken();
+    }
+
     @Data
     static class TelegramConfig {
         private BotConfig bot;
@@ -59,5 +64,10 @@ public class WordBotConfig {
     @Data
     static class DingdingConfig {
         private String secret;
+    }
+
+    @Data
+    static class EudbConfig {
+        private String accessToken;
     }
 }
