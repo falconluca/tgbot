@@ -1,0 +1,14 @@
+proxy:
+  http:
+    host: "127.0.0.1"
+    port: 8010
+    
+telegram:
+  bot:
+    token: "XXX"
+    username: "XXX"
+    creatorId: 0
+
+dingding:
+  secret: "XXX"
+
