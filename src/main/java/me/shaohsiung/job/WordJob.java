@@ -1,6 +1,6 @@
 package me.shaohsiung.job;
 
-import me.shaohsiung.model.BaseModel;
+import me.shaohsiung.response.BaseResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 
 import java.util.List;
@@ -28,5 +28,5 @@ public abstract class WordJob {
         return url;
     }
 
-    public abstract List<BaseModel> handleResponse(String body);
+    public abstract List<BaseResponse> handleResponse(String body);
 }

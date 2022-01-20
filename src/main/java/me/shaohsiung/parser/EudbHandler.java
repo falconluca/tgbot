@@ -1,10 +1,13 @@
 package me.shaohsiung.parser;
 
-import me.shaohsiung.model.EudbResponse;
+import me.shaohsiung.response.EudbResponse;
 import me.shaohsiung.util.JsonUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+/**
+ * 欧陆词典响应处理类 TODO remove this helper class
+ */
 public class EudbHandler {
     private final EudbResponse response;
 

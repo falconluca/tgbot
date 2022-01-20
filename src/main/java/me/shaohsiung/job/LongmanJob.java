@@ -1,7 +1,7 @@
 package me.shaohsiung.job;
 
-import me.shaohsiung.model.BaseModel;
 import me.shaohsiung.parser.LongmanParser;
+import me.shaohsiung.response.BaseResponse;
 import me.shaohsiung.util.HTTPUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -23,7 +23,7 @@ public class LongmanJob extends WordJob {
     }
 
     @Override
-    public List<BaseModel> handleResponse(String body) {
+    public List<BaseResponse> handleResponse(String body) {
         LongmanParser longmanParser = LongmanParser.of(body);
         return longmanParser.parse();
     }

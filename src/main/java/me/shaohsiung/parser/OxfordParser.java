@@ -1,7 +1,7 @@
 package me.shaohsiung.parser;
 
-import me.shaohsiung.model.BaseModel;
-import me.shaohsiung.model.OxfordWord;
+import me.shaohsiung.response.BaseResponse;
+import me.shaohsiung.response.OxfordResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * 牛津词典页面解析器
+ */
 public class OxfordParser {
     private final Elements rows;
 
@@ -34,14 +37,14 @@ public class OxfordParser {
         return new OxfordParser(el.select("ol li"));
     }
 
-    public List<BaseModel> parse() {
+    public List<BaseResponse> parse() {
         if (CollectionUtils.isEmpty(rows)) {
             return Collections.emptyList();
         }
 
-        List<BaseModel> words = new ArrayList<>();
+        List<BaseResponse> words = new ArrayList<>();
         for (Element el : rows) {
-            OxfordWord word = new OxfordWord();
+            OxfordResponse word = new OxfordResponse();
             String text = el.select("span.def").text();
             word.setDefine(text);
 

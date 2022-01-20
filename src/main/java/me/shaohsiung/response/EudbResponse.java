@@ -1,10 +1,14 @@
-package me.shaohsiung.model;
+package me.shaohsiung.response;
 
+import me.shaohsiung.model.WordSpec;
 import me.shaohsiung.util.UuidUtils;
 
 import java.time.LocalDateTime;
 
-public class EudbResponse extends BaseModel {
+/**
+ * 欧陆词典开放接口的 HTTP 响应
+ */
+public class EudbResponse extends BaseResponse {
     private String message;
 
     public EudbResponse() {
@@ -17,5 +21,10 @@ public class EudbResponse extends BaseModel {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    @Override
+    public void attach(WordSpec wordSpec) {
+        throw new UnsupportedOperationException("EudbResponse unsupport attach to word spec");
     }
 }

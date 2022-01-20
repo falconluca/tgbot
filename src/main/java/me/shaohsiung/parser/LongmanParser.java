@@ -1,7 +1,7 @@
 package me.shaohsiung.parser;
 
-import me.shaohsiung.model.BaseModel;
-import me.shaohsiung.model.LongmanWord;
+import me.shaohsiung.response.BaseResponse;
+import me.shaohsiung.response.LongmanResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * 朗文词典页面解析器
+ */
 public class LongmanParser {
     private final Elements rows;
 
@@ -34,14 +37,14 @@ public class LongmanParser {
         return new LongmanParser(el.select(".dictionary span.dictentry"));
     }
     
-    public List<BaseModel> parse() {
+    public List<BaseResponse> parse() {
         if (CollectionUtils.isEmpty(rows)) {
             return Collections.emptyList();
         }
 
-        List<BaseModel> words = new ArrayList<>();
+        List<BaseResponse> words = new ArrayList<>();
         for (Element el : rows) {
-            LongmanWord word = new LongmanWord();
+            LongmanResponse word = new LongmanResponse();
             String define = el.select("span.DEF").text();
             word.setDefine(define);
 

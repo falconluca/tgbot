@@ -1,11 +1,14 @@
 package me.shaohsiung.cmd;
 
 import lombok.extern.slf4j.Slf4j;
-import me.shaohsiung.enums.SoundEnums;
+import me.shaohsiung.dao.SQLiteWordSpecDao;
+import me.shaohsiung.dao.WordSpecDao;
+import me.shaohsiung.enums.PronunciationEnums;
+import me.shaohsiung.enums.SounderEnums;
 import me.shaohsiung.job.WordJob;
-import me.shaohsiung.model.BaseModel;
-import me.shaohsiung.model.EudbResponse;
-import me.shaohsiung.model.SoundData;
+import me.shaohsiung.model.Pronunciation;
+import me.shaohsiung.model.WordSpec;
+import me.shaohsiung.response.BaseResponse;
 import me.shaohsiung.sounder.GoogleSounder;
 import me.shaohsiung.sounder.YouTubeSounder;
 import me.shaohsiung.sounder.YoudaoSounder;
@@ -27,6 +30,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,10 +39,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class WordCommand {
+    private static final int MAX_WAIT_SECONDS = 5;
+    
     private final SilentSender silent;
     
     private final Map<String, WordJob> jobs;
@@ -51,7 +56,7 @@ public class WordCommand {
     
     private final CloseableHttpAsyncClient httpclient;
     
-    private static final int MAX_WAIT_SECONDS = 5;
+    private final WordSpecDao wordSpecDao;
     
     public WordCommand(SilentSender silent, Map<String, WordJob> jobs) {
         this.silent = silent;
@@ -60,6 +65,8 @@ public class WordCommand {
         this.googleSounder = new GoogleSounder();
         this.youdaoSounder = new YoudaoSounder();
         this.youTubeSounder = new YouTubeSounder();
+        
+        this.wordSpecDao = new SQLiteWordSpecDao();
 
         IOReactorConfig ioConfig = IOReactorConfig.custom()
                 .setConnectTimeout(3000)
@@ -80,29 +87,41 @@ public class WordCommand {
     }
 
     public void action(MessageContext ctx) {
-        String word = "hello";
-        
-        List<BaseModel> soundDataList = buildSoundDataList(word);
-        List<BaseModel> wordDataList = fetchAndSyncWordData(word);
-        List<BaseModel> wordDataWithoutEudb = wordDataList.stream()
-                .filter(item -> !(item instanceof EudbResponse))
-                .collect(Collectors.toList());
-        List<BaseModel> data = addAll(soundDataList, wordDataWithoutEudb);
+        String word = ctx.firstArg();
+        if (StringUtils.isBlank(word)) {
+            silent.send("🌚 Oops! Something wrong...\n " +
+                    "please enter at least one word\n\n🎯 Example: /word hello\n", ctx.chatId());
+            return;
+        }
 
-        // sqlite and ui string -> concurrency
-        
-        silent.send("pong", ctx.chatId());
+        List<Pronunciation> pronunciationList = composePronunciationList(word);
+        List<BaseResponse> explanationList = fetchExplanationAndSyncWord(word);
+        WordSpec wordSpec = buildWordSpec(word, pronunciationList, explanationList);
+        wordSpecDao.persist(wordSpec);
+        String result = wordSpec.beautyFormat();
+        silent.send(result, ctx.chatId());
     }
 
-    private List<BaseModel> addAll(List<BaseModel> soundDataList, List<BaseModel> wordDataList) {
-        List<BaseModel> result = new ArrayList<>(soundDataList.size() + wordDataList.size());
-        result.addAll(soundDataList);
-        result.addAll(wordDataList);
-        return result;
+    private WordSpec buildWordSpec(String word, List<Pronunciation> pronunciationList, 
+            List<BaseResponse> explanationList) {
+        WordSpec wordSpec = new WordSpec();
+        wordSpec.setWord(word);
+        wordSpec.setCreateAt(LocalDateTime.now());
+        wordSpec.setVideoList(Collections.singletonList(youTubeSounder.findFirst(word)));
+        
+        for (Pronunciation pronunciation : pronunciationList) {
+            pronunciation.attach(wordSpec);
+        }
+        for (BaseResponse explanation : explanationList) {
+            explanation.attach(wordSpec);
+        }
+        // TODO add some images
+        wordSpec.setImgList(Collections.emptyList());
+        return wordSpec;
     }
 
-    private List<BaseModel> fetchAndSyncWordData(String word) {
-        final List<BaseModel> result = new CopyOnWriteArrayList<>();
+    private List<BaseResponse> fetchExplanationAndSyncWord(String word) {
+        final List<BaseResponse> result = new CopyOnWriteArrayList<>();
         
         final AtomicLong success = new AtomicLong();
         final AtomicLong fail = new AtomicLong();
@@ -161,7 +180,7 @@ public class WordCommand {
         return result;
     }
     
-    private void handleResponse(HttpResponse response, WordJob job, List<BaseModel> result) throws IOException {
+    private void handleResponse(HttpResponse response, WordJob job, List<BaseResponse> result) throws IOException {
         StatusLine statusLine = response.getStatusLine();
         log.info("HTTP Response status line: " + statusLine.toString());
 
@@ -180,29 +199,26 @@ public class WordCommand {
             return;
         }
 
-        List<BaseModel> data = job.handleResponse(body);
+        List<BaseResponse> data = job.handleResponse(body);
         result.addAll(data);
     }
 
-    private List<BaseModel> buildSoundDataList(String word) {
+    private List<Pronunciation> composePronunciationList(String word) {
         if (StringUtils.isBlank(word)) {
             return Collections.emptyList();
         }
         
-        final List<BaseModel> result = new ArrayList<>();
+        final List<Pronunciation> result = new ArrayList<>();
         String w = word.trim();
         
         String british = youdaoSounder.british(w);
-        result.add(SoundData.of(british, SoundEnums.YOUDAO.name()));
+        result.add(Pronunciation.of(w, british, SounderEnums.YOUDAO.name(), PronunciationEnums.BRITISH));
 
         String usa = youdaoSounder.usa(w);
-        result.add(SoundData.of(usa, SoundEnums.YOUDAO.name()));
-
-        String youtube = youTubeSounder.list(w);
-        result.add(SoundData.of(youtube, SoundEnums.YOUTUBE.name()));
+        result.add(Pronunciation.of(w, usa, SounderEnums.YOUDAO.name(), PronunciationEnums.AMERICAN));
 
         String google = googleSounder.pronounce(w);
-        result.add(SoundData.of(google, SoundEnums.GOOGLE.name()));
+        result.add(Pronunciation.of(w, google, SounderEnums.GOOGLE.name(), null));
         return result;
     }
 }

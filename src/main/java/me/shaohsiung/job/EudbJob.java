@@ -1,8 +1,8 @@
 package me.shaohsiung.job;
 
 import lombok.extern.slf4j.Slf4j;
-import me.shaohsiung.model.BaseModel;
 import me.shaohsiung.parser.EudbHandler;
+import me.shaohsiung.response.BaseResponse;
 import me.shaohsiung.util.HTTPUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -11,7 +11,6 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,17 +44,15 @@ public class EudbJob extends WordJob {
     }
 
     @Override
-    public List<BaseModel> handleResponse(String body) {
+    public List<BaseResponse> handleResponse(String body) {
         EudbHandler eudbHandler = EudbHandler.of(body);
         if (!eudbHandler.izSuccess()) {
             return Collections.emptyList();
         }
         
-        List<BaseModel> result = new ArrayList<>();
         Integer importCount = eudbHandler.getImportCount();
         log.info("eudb import word count: " + importCount);
-        result.add(eudbHandler.getEntity());
-        return result;
+        return Collections.emptyList();
     }
 
     public void setDictionaryId(String dictionaryId) {
