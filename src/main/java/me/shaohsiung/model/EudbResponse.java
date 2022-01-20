@@ -1,8 +1,10 @@
 package me.shaohsiung.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class EudbResponse {
+@EqualsAndHashCode(callSuper = true)
+public class EudbResponse extends BaseModel {
     private String message;
 }

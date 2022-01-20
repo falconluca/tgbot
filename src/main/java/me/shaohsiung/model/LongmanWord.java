@@ -1,11 +1,13 @@
 package me.shaohsiung.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
 @Data
-public class LongmanWord {
+@EqualsAndHashCode(callSuper = true)
+public class LongmanWord extends BaseModel {
     private String define;
     private List<String> sentences;
 }
