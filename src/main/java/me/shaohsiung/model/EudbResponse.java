@@ -1,10 +1,21 @@
 package me.shaohsiung.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import me.shaohsiung.util.UuidUtils;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
+import java.time.LocalDateTime;
+
 public class EudbResponse extends BaseModel {
     private String message;
+
+    public EudbResponse() {
+        super(UuidUtils.uuid(), LocalDateTime.now());
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

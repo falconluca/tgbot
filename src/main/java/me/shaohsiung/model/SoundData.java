@@ -1,13 +1,9 @@
 package me.shaohsiung.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import me.shaohsiung.util.UuidUtils;
 
 import java.time.LocalDateTime;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
 public class SoundData extends BaseModel {
     private String url;
     private String from;
@@ -20,5 +16,21 @@ public class SoundData extends BaseModel {
 
     public static SoundData of(String url, String from) {
         return new SoundData(url, from);
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
     }
 }

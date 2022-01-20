@@ -1,5 +1,6 @@
 package me.shaohsiung.parser;
 
+import me.shaohsiung.model.BaseModel;
 import me.shaohsiung.model.LongmanWord;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,6 +10,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class LongmanParser {
@@ -32,12 +34,12 @@ public class LongmanParser {
         return new LongmanParser(el.select(".dictionary span.dictentry"));
     }
     
-    void parse() {
+    public List<BaseModel> parse() {
         if (CollectionUtils.isEmpty(rows)) {
-            return;
+            return Collections.emptyList();
         }
 
-        List<LongmanWord> words = new ArrayList<>();
+        List<BaseModel> words = new ArrayList<>();
         for (Element el : rows) {
             LongmanWord word = new LongmanWord();
             String define = el.select("span.DEF").text();
@@ -45,6 +47,6 @@ public class LongmanParser {
 
             words.add(word);
         }
-        System.out.println(words);
+        return words;
     }
 }

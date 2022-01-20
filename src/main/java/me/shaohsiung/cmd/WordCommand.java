@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 public class WordCommand {
     private final SilentSender silent;
     
-    private Map<String, WordJob> jobs;
+    private final Map<String, WordJob> jobs;
     
     private final GoogleSounder googleSounder;
     
@@ -163,7 +163,7 @@ public class WordCommand {
     
     private void handleResponse(HttpResponse response, WordJob job, List<BaseModel> result) throws IOException {
         StatusLine statusLine = response.getStatusLine();
-        System.out.println(statusLine.toString());
+        log.info("HTTP Response status line: " + statusLine.toString());
 
         Charset charset = null;
         try {
@@ -180,7 +180,8 @@ public class WordCommand {
             return;
         }
 
-        job.handleResponse(body);
+        List<BaseModel> data = job.handleResponse(body);
+        result.addAll(data);
     }
 
     private List<BaseModel> buildSoundDataList(String word) {

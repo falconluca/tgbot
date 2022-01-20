@@ -1,6 +1,9 @@
 package me.shaohsiung.job;
 
+import me.shaohsiung.model.BaseModel;
 import org.apache.http.client.methods.HttpUriRequest;
+
+import java.util.List;
 
 public abstract class WordJob {
     protected String key;
@@ -25,5 +28,5 @@ public abstract class WordJob {
         return url;
     }
 
-    public abstract void handleResponse(String body);
+    public abstract List<BaseModel> handleResponse(String body);
 }

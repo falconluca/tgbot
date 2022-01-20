@@ -1,9 +1,13 @@
 package me.shaohsiung.job;
 
+import me.shaohsiung.model.BaseModel;
+import me.shaohsiung.parser.OxfordParser;
 import me.shaohsiung.util.HTTPUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.protocol.HTTP;
+
+import java.util.List;
 
 public class OxfordJob extends WordJob {
     public OxfordJob(String key, String url) {
@@ -19,7 +23,8 @@ public class OxfordJob extends WordJob {
     }
 
     @Override
-    public void handleResponse(String body) {
-        
+    public List<BaseModel> handleResponse(String body) {
+        OxfordParser oxfordParser = OxfordParser.of(body);
+        return oxfordParser.parse();
     }
 }

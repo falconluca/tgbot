@@ -1,5 +1,6 @@
 package me.shaohsiung.parser;
 
+import me.shaohsiung.model.BaseModel;
 import me.shaohsiung.model.OxfordWord;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,6 +10,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class OxfordParser {
@@ -32,12 +34,12 @@ public class OxfordParser {
         return new OxfordParser(el.select("ol li"));
     }
 
-    public void parse() {
+    public List<BaseModel> parse() {
         if (CollectionUtils.isEmpty(rows)) {
-            return;
+            return Collections.emptyList();
         }
 
-        List<OxfordWord> words = new ArrayList<>();
+        List<BaseModel> words = new ArrayList<>();
         for (Element el : rows) {
             OxfordWord word = new OxfordWord();
             String text = el.select("span.def").text();
@@ -54,6 +56,6 @@ public class OxfordParser {
             words.add(word);
         }
 
-        System.out.println(words);
+        return words;
     }
 }

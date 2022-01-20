@@ -1,9 +1,13 @@
 package me.shaohsiung.job;
 
+import me.shaohsiung.model.BaseModel;
+import me.shaohsiung.parser.LongmanParser;
 import me.shaohsiung.util.HTTPUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.protocol.HTTP;
+
+import java.util.List;
 
 public class LongmanJob extends WordJob {
     public LongmanJob(String key, String url) {
@@ -19,7 +23,8 @@ public class LongmanJob extends WordJob {
     }
 
     @Override
-    public void handleResponse(String body) {
-        
+    public List<BaseModel> handleResponse(String body) {
+        LongmanParser longmanParser = LongmanParser.of(body);
+        return longmanParser.parse();
     }
 }

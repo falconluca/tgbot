@@ -38,4 +38,8 @@ public class EudbHandler {
         int idx = msg.indexOf(" : ");
         return Integer.parseInt(msg.substring(idx + 3));
     }
+    
+    public EudbResponse getEntity() {
+        return response;
+    }
 }

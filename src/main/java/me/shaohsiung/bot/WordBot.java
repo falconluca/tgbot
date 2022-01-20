@@ -6,6 +6,7 @@ import me.shaohsiung.config.WordBotConfig;
 import me.shaohsiung.enums.WordEnums;
 import me.shaohsiung.job.EudbJob;
 import me.shaohsiung.job.LongmanJob;
+import me.shaohsiung.job.OxfordJob;
 import me.shaohsiung.job.WordJob;
 import org.telegram.abilitybots.api.bot.AbilityBot;
 import org.telegram.abilitybots.api.objects.Ability;
@@ -50,7 +51,7 @@ public class WordBot extends AbilityBot {
         jobs.put(WordEnums.LONGMAN.name(), new LongmanJob(WordEnums.LONGMAN.name(), 
                 "https://www.ldoceonline.com/dictionary/%s"));
 
-        jobs.put(WordEnums.OXFORD.name(), new LongmanJob(WordEnums.OXFORD.name(), 
+        jobs.put(WordEnums.OXFORD.name(), new OxfordJob(WordEnums.OXFORD.name(), 
                 "https://www.oxfordlearnersdictionaries.com/definition/american_english/%s"));
 
         EudbJob eudbJob = new EudbJob(WordEnums.EUDB.name(), "https://api.frdic.com/api/open/v1/studylist/words");
