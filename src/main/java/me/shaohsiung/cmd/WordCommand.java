@@ -177,6 +177,7 @@ public class WordCommand {
         catch (Exception e) {
             log.info("wait http client error:", e);
         }
+        log.info("fetch explanation and sync word ==> success: {}, fail: {}", success, fail);
         return result;
     }
     
