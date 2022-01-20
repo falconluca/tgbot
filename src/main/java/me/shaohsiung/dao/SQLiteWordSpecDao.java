@@ -2,12 +2,14 @@ package me.shaohsiung.dao;
 
 import lombok.extern.slf4j.Slf4j;
 import me.shaohsiung.model.WordSpec;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class SQLiteWordSpecDao implements WordSpecDao {
@@ -36,9 +38,14 @@ public class SQLiteWordSpecDao implements WordSpecDao {
             pstmt.setString(7, String.join(",", videoList));
             List<WordSpec.WordExplanation> explanationList = wordSpec.getExplanationList();
 
-            // TODO
-            WordSpec.WordExplanation wordExplanation1 = explanationList.get(0);
-            WordSpec.WordExplanation wordExplanation2 = explanationList.get(1);
+            String exp1 = composeWordExplanation(explanationList.get(0));
+            if (StringUtils.isNotBlank(exp1)) {
+                pstmt.setString(8, exp1);
+            }
+            String exp2 = composeWordExplanation(explanationList.get(1));
+            if (StringUtils.isNotBlank(exp2)) {
+                pstmt.setString(9, exp2);
+            }
 
             pstmt.executeUpdate();
             pstmt.close();
@@ -57,5 +64,15 @@ public class SQLiteWordSpecDao implements WordSpecDao {
             }
         }
         log.info("Opened database successfully");
+    }
+
+    private String composeWordExplanation(WordSpec.WordExplanation explanation) {
+        String type = explanation.getType();
+        String expl = explanation.getExplanation();
+        String examples = explanation.getExamples()
+                .stream()
+                .limit(2)
+                .collect(Collectors.joining(","));
+        return String.format("%s: %s\n%s", type, expl, examples);
     }
 }

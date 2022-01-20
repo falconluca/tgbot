@@ -14,6 +14,8 @@ public class LongmanResponse extends BaseResponse {
     private String define;
     
     private List<String> examples;
+    
+    private String type;
 
     public LongmanResponse() {
         super(UuidUtils.uuid(), LocalDateTime.now());
@@ -35,6 +37,14 @@ public class LongmanResponse extends BaseResponse {
         this.examples = examples;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public void attach(WordSpec wordSpec) {
         List<WordSpec.WordExplanation> explanationList = wordSpec.getExplanationList();
@@ -43,9 +53,9 @@ public class LongmanResponse extends BaseResponse {
         }
 
         WordSpec.WordExplanation exp = new WordSpec.WordExplanation();
-        exp.setExamples(examples);
-//        exp.setType(type);
         exp.setExplanation(define);
+        exp.setType(type);
+        exp.setExamples(examples);
         explanationList.add(exp);
     }
 }

@@ -14,6 +14,8 @@ public class OxfordResponse extends BaseResponse {
     private String define;
     
     private List<String> examples;
+    
+    private String type;
 
     public OxfordResponse() {
         super(UuidUtils.uuid(), LocalDateTime.now());
@@ -43,9 +45,9 @@ public class OxfordResponse extends BaseResponse {
         }
 
         WordSpec.WordExplanation exp = new WordSpec.WordExplanation();
-        exp.setExamples(examples);
-//        exp.setType(type);
         exp.setExplanation(define);
+        exp.setType(type);
+        exp.setExamples(examples);
         explanationList.add(exp);
     }
 }
