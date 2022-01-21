@@ -22,7 +22,7 @@ public class SQLiteWordSpecDao implements WordSpecDao {
         Connection conn = null;
         try {
             Class.forName("org.sqlite.JDBC");
-            conn = DriverManager.getConnection("jdbc:sqlite:test.db");
+            conn = DriverManager.getConnection("jdbc:sqlite:sqlite/tgbot.db");
             conn.setAutoCommit(false);
             
             PreparedStatement pstmt = conn.prepareStatement(PERSIST_SQL);
@@ -37,14 +37,15 @@ public class SQLiteWordSpecDao implements WordSpecDao {
             List<String> videoList = wordSpec.getVideoList();
             pstmt.setString(7, String.join(",", videoList));
             List<WordSpec.WordExplanation> explanationList = wordSpec.getExplanationList();
-
-            String exp1 = composeWordExplanation(explanationList.get(0));
-            if (StringUtils.isNotBlank(exp1)) {
-                pstmt.setString(8, exp1);
-            }
-            String exp2 = composeWordExplanation(explanationList.get(1));
-            if (StringUtils.isNotBlank(exp2)) {
-                pstmt.setString(9, exp2);
+            if (explanationList != null && explanationList.size() != 0) {
+                String exp1 = composeWordExplanation(explanationList.get(0));
+                if (StringUtils.isNotBlank(exp1)) {
+                    pstmt.setString(8, exp1);
+                }
+                String exp2 = composeWordExplanation(explanationList.get(1));
+                if (StringUtils.isNotBlank(exp2)) {
+                    pstmt.setString(9, exp2);
+                }
             }
 
             pstmt.executeUpdate();
@@ -52,7 +53,7 @@ public class SQLiteWordSpecDao implements WordSpecDao {
             conn.commit();
         }
         catch (Exception e) {
-            log.error(e.getClass().getName() + ": " + e.getMessage());
+            log.error("sqlite error", e);
             System.exit(0);
         }
         finally {

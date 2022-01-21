@@ -54,14 +54,17 @@ public class WordSpec {
                 .append("英音: ").append(britishPronunciation).append("\n")
                 .append("Google: ").append(googlePronunciation).append("\n")
                 .append("video: ").append(videoList.get(0)).append("\n");
+        if (explanationList == null) {
+            return builder.toString();
+        }
         
         WordExplanation exp1 = explanationList.get(0);
         if (exp1 != null) {
-            builder.append(exp1.formatString());
+            builder.append("\n").append(exp1.formatString());
         }
         WordExplanation exp2 = explanationList.get(0);
         if (exp2 != null) {
-            builder.append(exp2.formatString());
+            builder.append("\n").append(exp2.formatString());
         }
         return builder.toString();
     }
