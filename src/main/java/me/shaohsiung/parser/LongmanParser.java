@@ -1,8 +1,9 @@
 package me.shaohsiung.parser;
 
+import lombok.extern.slf4j.Slf4j;
 import me.shaohsiung.response.BaseResponse;
 import me.shaohsiung.response.LongmanResponse;
-import me.shaohsiung.util.AssertUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -15,21 +16,25 @@ import java.util.List;
 /**
  * 朗文词典页面解析器
  */
+@Slf4j
 public class LongmanParser {
     private final Elements rows;
 
-    public LongmanParser(Elements initRows) {
-        AssertUtils.notNull(initRows, "initRows");
-        rows = initRows;
+    private LongmanParser(Elements rows) {
+        this.rows = rows;
     }
 
     public static LongmanParser of(String html) {
-        AssertUtils.hasText(html, "html must not be blank.");
+        if (StringUtils.isBlank(html)) {
+            log.warn("html is black, generate a non content Longman parser");
+            return new LongmanParser(new Elements());
+        }
 
         Document document = Jsoup.parse(html);
         Elements rows = document.selectXpath("/html/body/div[2]/div[2]/div[2]");
         if (rows.isEmpty()) {
-            throw new RuntimeException("html parse failed");
+            log.warn("page cannot match the pattern, generate a non content Longman parser");
+            return new LongmanParser(new Elements());
         }
 
         Element el = rows.get(0);

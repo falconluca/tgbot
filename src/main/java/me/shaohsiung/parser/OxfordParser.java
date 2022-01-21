@@ -1,8 +1,9 @@
 package me.shaohsiung.parser;
 
+import lombok.extern.slf4j.Slf4j;
 import me.shaohsiung.response.BaseResponse;
 import me.shaohsiung.response.OxfordResponse;
-import me.shaohsiung.util.AssertUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -15,21 +16,25 @@ import java.util.List;
 /**
  * 牛津词典页面解析器
  */
+@Slf4j
 public class OxfordParser {
     private final Elements rows;
 
-    public OxfordParser(Elements initRows) {
-        AssertUtils.notNull(initRows, "initRows");
-        rows = initRows;
+    private OxfordParser(Elements rows) {
+        this.rows = rows;
     }
 
     public static OxfordParser of(String html) {
-        AssertUtils.hasText(html, "html must not be blank.");
+        if (StringUtils.isBlank(html)) {
+            log.warn("html is black, generate a non content Oxford parser");
+            return new OxfordParser(new Elements());
+        }
 
         Document document = Jsoup.parse(html);
         Elements rows = document.selectXpath("//*[@id=\"entryContent\"]");
         if (rows.isEmpty()) {
-            throw new RuntimeException("html parse failed");
+            log.warn("page cannot match the pattern, generate a non content Oxford parser");
+            return new OxfordParser(new Elements());
         }
 
         Element el = rows.get(0);

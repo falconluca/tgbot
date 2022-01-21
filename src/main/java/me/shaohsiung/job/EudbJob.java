@@ -3,13 +3,11 @@ package me.shaohsiung.job;
 import lombok.extern.slf4j.Slf4j;
 import me.shaohsiung.parser.EudbHandler;
 import me.shaohsiung.response.BaseResponse;
-import me.shaohsiung.util.HTTPUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.protocol.HTTP;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,10 +25,8 @@ public class EudbJob extends WordJob {
     @Override
     public HttpUriRequest prepareRequest(String word) {
         final HttpPost httPost = new HttpPost(url);
-        httPost.setHeader(HTTP.USER_AGENT, HTTPUtils.userAgent());
         httPost.setHeader("Authorization", accessToken);
         httPost.setHeader("Content-Type", "application/json");
-        httPost.setHeader(HTTP.CONN_DIRECTIVE, HTTP.CONN_CLOSE);
         
         String body = "{\n" +
                 "    \"id\": \""+  dictionaryId +"\",\n" +
