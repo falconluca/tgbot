@@ -71,6 +71,7 @@ public class SQLiteWordSpecDao implements WordSpecDao {
         String expl = explanation.getExplanation();
         String examples = explanation.getExamples()
                 .stream()
+                .filter(StringUtils::isNotBlank)
                 .limit(2)
                 .collect(Collectors.joining(","));
         return String.format("%s: %s\n%s", type, expl, examples);

@@ -48,7 +48,22 @@ public class WordSpec {
     private List<String> videoList;
     
     public String beautyFormat() {
-        return "UI table";
+        StringBuilder builder = new StringBuilder();
+        builder.append(word).append("\n")
+                .append("美音: ").append(americanPronunciation).append("\n")
+                .append("英音: ").append(britishPronunciation).append("\n")
+                .append("Google: ").append(googlePronunciation).append("\n")
+                .append("video: ").append(videoList.get(0)).append("\n");
+        
+        WordExplanation exp1 = explanationList.get(0);
+        if (exp1 != null) {
+            builder.append(exp1.formatString());
+        }
+        WordExplanation exp2 = explanationList.get(0);
+        if (exp2 != null) {
+            builder.append(exp2.formatString());
+        }
+        return builder.toString();
     }
 
     public String getWord() {
@@ -130,6 +145,34 @@ public class WordSpec {
          * 词性：动词、形容词等
          */
         private String type;
+        
+        public String firstExample() {
+            if (examples == null || examples.isEmpty()) {
+                return null;
+            }
+            return examples.get(0);
+        }
+
+        public String secondExample() {
+            if (examples == null || examples.isEmpty()) {
+                return null;
+            }
+            return examples.get(1);
+        }
+        
+        public String formatString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append("exp1: ").append(type).append(" ").append(explanation).append("\n");
+            
+            // 仅显示2种解释
+            if (firstExample() != null) {
+                builder.append("- ").append(firstExample()).append("\n");
+            }
+            if (secondExample() != null) {
+                builder.append("- ").append(secondExample()).append("\n");
+            }
+            return builder.toString();
+        }
 
         public String getExplanation() {
             return explanation;

@@ -37,6 +37,14 @@ public class OxfordResponse extends BaseResponse {
         this.examples = examples;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public void attach(WordSpec wordSpec) {
         List<WordSpec.WordExplanation> explanationList = wordSpec.getExplanationList();
@@ -49,5 +57,7 @@ public class OxfordResponse extends BaseResponse {
         exp.setType(type);
         exp.setExamples(examples);
         explanationList.add(exp);
+        
+        wordSpec.setExplanationList(explanationList);
     }
 }

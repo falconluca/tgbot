@@ -16,7 +16,7 @@ public class LongmanJob extends WordJob {
 
     @Override
     public HttpUriRequest prepareRequest(String word) {
-        final HttpGet httpGet = new HttpGet(url);
+        final HttpGet httpGet = new HttpGet(String.format(url, word));
         httpGet.setHeader(HTTP.USER_AGENT, HTTPUtils.userAgent());
         httpGet.setHeader(HTTP.CONN_DIRECTIVE, HTTP.CONN_CLOSE);
         return httpGet;

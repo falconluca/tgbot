@@ -29,6 +29,7 @@ public class EudbJob extends WordJob {
         final HttpPost httPost = new HttpPost(url);
         httPost.setHeader(HTTP.USER_AGENT, HTTPUtils.userAgent());
         httPost.setHeader("Authorization", accessToken);
+        httPost.setHeader("Content-Type", "application/json");
         httPost.setHeader(HTTP.CONN_DIRECTIVE, HTTP.CONN_CLOSE);
         
         String body = "{\n" +

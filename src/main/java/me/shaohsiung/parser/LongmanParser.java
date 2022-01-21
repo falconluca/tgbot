@@ -2,12 +2,11 @@ package me.shaohsiung.parser;
 
 import me.shaohsiung.response.BaseResponse;
 import me.shaohsiung.response.LongmanResponse;
+import me.shaohsiung.util.AssertUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,12 +19,12 @@ public class LongmanParser {
     private final Elements rows;
 
     public LongmanParser(Elements initRows) {
-        Assert.notNull(initRows, "initRows");
+        AssertUtils.notNull(initRows, "initRows");
         rows = initRows;
     }
 
     public static LongmanParser of(String html) {
-        Assert.hasText(html, "html must not be blank.");
+        AssertUtils.hasText(html, "html must not be blank.");
 
         Document document = Jsoup.parse(html);
         Elements rows = document.selectXpath("/html/body/div[2]/div[2]/div[2]");
@@ -38,7 +37,7 @@ public class LongmanParser {
     }
     
     public List<BaseResponse> parse() {
-        if (CollectionUtils.isEmpty(rows)) {
+        if (rows == null || rows.isEmpty()) {
             return Collections.emptyList();
         }
 
@@ -47,6 +46,16 @@ public class LongmanParser {
             LongmanResponse word = new LongmanResponse();
             String define = el.select("span.DEF").text();
             word.setDefine(define);
+
+            String type = el.select("span.POS").text();
+            word.setType(type);
+            
+            List<String> examples = new ArrayList<>();
+            Elements exampleElements = el.select("span.EXAMPLE");
+            for (Element exampleElement : exampleElements) {
+                examples.add(exampleElement.text());
+            }
+            word.setExamples(examples);
 
             words.add(word);
         }

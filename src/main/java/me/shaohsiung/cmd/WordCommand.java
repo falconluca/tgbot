@@ -151,7 +151,7 @@ public class WordCommand {
                     fail.incrementAndGet();
                     request.abort();
                     if (ex instanceof SocketTimeoutException) {
-                        log.error("Failed to fetch metric from <{}>: socket timeout", job.getUrl());
+                        log.error("Failed to fetch data from <{}>: socket timeout", job.getUrl());
                     }
                     else if (ex instanceof ConnectException) {
                         log.error("Failed to fetch metric from <{}> (ConnectionException: {})", 

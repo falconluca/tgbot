@@ -57,5 +57,7 @@ public class LongmanResponse extends BaseResponse {
         exp.setType(type);
         exp.setExamples(examples);
         explanationList.add(exp);
+        
+        wordSpec.setExplanationList(explanationList);
     }
 }

@@ -2,12 +2,11 @@ package me.shaohsiung.parser;
 
 import me.shaohsiung.response.BaseResponse;
 import me.shaohsiung.response.OxfordResponse;
+import me.shaohsiung.util.AssertUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,12 +19,12 @@ public class OxfordParser {
     private final Elements rows;
 
     public OxfordParser(Elements initRows) {
-        Assert.notNull(initRows, "initRows");
+        AssertUtils.notNull(initRows, "initRows");
         rows = initRows;
     }
 
     public static OxfordParser of(String html) {
-        Assert.hasText(html, "html must not be blank.");
+        AssertUtils.hasText(html, "html must not be blank.");
 
         Document document = Jsoup.parse(html);
         Elements rows = document.selectXpath("//*[@id=\"entryContent\"]");
@@ -38,7 +37,7 @@ public class OxfordParser {
     }
 
     public List<BaseResponse> parse() {
-        if (CollectionUtils.isEmpty(rows)) {
+        if (rows == null || rows.isEmpty()) {
             return Collections.emptyList();
         }
 
@@ -47,14 +46,16 @@ public class OxfordParser {
             OxfordResponse word = new OxfordResponse();
             String text = el.select("span.def").text();
             word.setDefine(text);
+            
+            String type = el.select("span.gram-g").text();
+            word.setType(type);
 
-            List<String> sen = new ArrayList<>();
-            Elements sentences = el.select("span.x-gs span.x-g");
-            for (Element sentence : sentences) {
-                String t1 = sentence.text();
-                sen.add(t1);
+            List<String> examples = new ArrayList<>();
+            Elements exampleElements = el.select("span.x-gs span.x-g");
+            for (Element exampleElement : exampleElements) {
+                examples.add(exampleElement.text());
             }
-            word.setSentences(sen);
+            word.setExamples(examples);
 
             words.add(word);
         }

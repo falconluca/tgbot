@@ -1,6 +1,7 @@
 package me.shaohsiung.model;
 
 import me.shaohsiung.enums.PronunciationEnums;
+import me.shaohsiung.enums.SounderEnums;
 
 public class Pronunciation {
     private String word;
@@ -25,6 +26,10 @@ public class Pronunciation {
         }
         if (PronunciationEnums.AMERICAN.equals(type)) {
             wordSpec.setAmericanPronunciation(url);
+        }
+
+        if (SounderEnums.GOOGLE.name().equals(from)) {
+            wordSpec.setGooglePronunciation(url);
         }
     }
 

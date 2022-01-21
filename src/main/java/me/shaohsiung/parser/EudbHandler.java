@@ -1,9 +1,9 @@
 package me.shaohsiung.parser;
 
 import me.shaohsiung.response.EudbResponse;
+import me.shaohsiung.util.AssertUtils;
 import me.shaohsiung.util.JsonUtils;
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 欧陆词典响应处理类 TODO remove this helper class
@@ -12,12 +12,12 @@ public class EudbHandler {
     private final EudbResponse response;
 
     public EudbHandler(EudbResponse response) {
-        Assert.notNull(response, "response");
+        AssertUtils.notNull(response, "response");
         this.response = response;
     }
 
     public static EudbHandler of(String json) {
-        Assert.hasText(json, "html must not be blank.");
+        AssertUtils.hasText(json, "html must not be blank.");
 
         EudbResponse eudbResponse = JsonUtils.toObject(json, EudbResponse.class);
         return new EudbHandler(eudbResponse);
@@ -25,7 +25,7 @@ public class EudbHandler {
     
     public boolean izSuccess() {
         String msg = response.getMessage();
-        if (!StringUtils.hasText(msg)) {
+        if (StringUtils.isBlank(msg)) {
             return false;
         }
         
