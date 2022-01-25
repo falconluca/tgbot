@@ -6,7 +6,7 @@ init-sqlite:
 .PHONY: docker-run
 docker-run:
 	@docker build -t tgbot .
-	@docker run --name=tgbot01 -p 8081:8081 -v sqlite:/app/sqlite
+	@docker run --name=tgbot01 -p 8081:8081 -v sqlite:/app/sqlite tgbot
 
 .PHONY: all
 all:

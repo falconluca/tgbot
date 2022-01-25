@@ -21,6 +21,6 @@ dingding:
 eudb:
   # 欧陆词典的授权信息
   accessToken: "XXX"
-  # 生效的生词本，如果没有设置，那么就使用默认生词本(dictionaryId为0)
+  # 生效的生词本，默认使用默认生词本(dictionaryId为0)
   dictionaryId: "XXX"
 

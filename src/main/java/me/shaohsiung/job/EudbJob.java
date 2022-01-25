@@ -3,6 +3,7 @@ package me.shaohsiung.job;
 import lombok.extern.slf4j.Slf4j;
 import me.shaohsiung.parser.EudbHandler;
 import me.shaohsiung.response.BaseResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -18,6 +19,8 @@ public class EudbJob extends WordJob {
     
     private String accessToken;
     
+    private final static String DEFAULT_DICTIONARY_ID = "0";
+    
     public EudbJob(String key, String url) {
         super(key, url);
     }
@@ -28,8 +31,9 @@ public class EudbJob extends WordJob {
         httPost.setHeader("Authorization", accessToken);
         httPost.setHeader("Content-Type", "application/json");
         
+        String id = StringUtils.isBlank(dictionaryId) ? DEFAULT_DICTIONARY_ID : dictionaryId;
         String body = "{\n" +
-                "    \"id\": \""+  dictionaryId +"\",\n" +
+                "    \"id\": \""+  id +"\",\n" +
                 "    \"language\": \"en\",\n" +
                 "    \"words\": [\n" +
                 "        \"" + word + "\"\n" +
